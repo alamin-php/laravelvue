@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Category;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class CategoryController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +14,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return Category::all();
+        //
     }
 
     /**
@@ -26,9 +25,7 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        return Category::create([
-            'name' => $request['name'],
-        ]);
+        //
     }
 
     /**
@@ -51,11 +48,7 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $cat = Category::findOrfail($id);
-
-        $cat->update($request->all());
-
-        return $cat;
+        //
     }
 
     /**
@@ -66,8 +59,6 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        $cat = Category::findOrfail($id);
-        $cat->delete();
-        return $cat;
+        //
     }
 }
