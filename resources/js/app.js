@@ -80,3 +80,7 @@ const app = new Vue({
 Vue.filter('myDate', function (created) {
 	return moment(created).format('MMMM Do YYYY');
 });
+
+Vue.filter('sortlength',function(text,length,suffix) {
+	return text.substring(0,length)+suffix;
+});

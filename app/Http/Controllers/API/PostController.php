@@ -15,7 +15,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        return Post::with('category','comments','user')->latest()->paginate(10);
+        return Post::with('category','comments','user')->latest()->paginate(5);
     }
 
     /**
