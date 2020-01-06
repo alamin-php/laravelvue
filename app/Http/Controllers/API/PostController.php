@@ -15,7 +15,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        return Post::with('user','category')->latest()->paginate(5);
+        return Post::with('category','comments','user')->latest()->paginate(10);
     }
 
     /**
@@ -37,7 +37,8 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        //
+        $post = Post::with('category','comments','user')->findOrfail($id);
+        return $post;
     }
 
     /**
@@ -49,7 +50,11 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $post = Post::findOrfail($id);
+
+        $post->update($request->all());
+
+        return ['message' => '200 OK'];
     }
 
     /**
@@ -60,6 +65,8 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $post = Post::findOrfail($id);
+        $post->delete();
+        return ['message' => '200 OK'];
     }
 }
