@@ -15,10 +15,10 @@ class CreatePostsTable extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('category_id');
-            $table->unsignedBigInteger('comment_id');
-            $table->unsignedBigInteger('tag_id');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('category_id')->nullable();
+            $table->unsignedBigInteger('comment_id')->nullable();
+            $table->unsignedBigInteger('tag_id')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->string('title')->nullable();
             $table->text('body')->nullable();
             $table->string('photo')->default('post.png');

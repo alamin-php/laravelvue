@@ -7,7 +7,7 @@
             <h3 class="card-title">Post's Table</h3>
 
             <div class="card-tools">
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Add Post <i class="fa fa-plus"></i></button>
+              <button type="button" class="btn btn-success"  @click="newModel">Add Post <i class="fa fa-plus"></i></button>
             </div>
           </div>
           <!-- /.card-header -->
@@ -18,7 +18,7 @@
                   <th>ID</th>
                   <th>Title</th>
                   <th>Category</th>
-                  <th>Post By</th>
+                  <th>User</th>
                   <th>Post Date</th>
                   <th>Photo</th>
                   <th>Modify</th>
@@ -29,9 +29,11 @@
                   <td>{{ index+1 }}</td>
                   <td>{{ post.title | sortlength(15,'...')}}</td>
                   <td v-if="post.category">{{ post.category.name }}</td>
+                  <td class="text-danger" v-else>No Category</td>
                   <td v-if="post.user">{{ post.user.name }}</td>
+                  <td class="text-danger" v-else>Unknow User</td>
                   <td>{{ post.created_at |myDate}}</td>
-                  <td><img width="100" height="64" :src="post.photo" alt="Image"></td>
+                  <td><img width="64" height="32" :src="post.photo" alt="Image"></td>
                   <td>
                     <a href="#"><i class="fa fa-eye"></i></a>/
                     <a href="#"><i class="fa fa-edit"></i></a>/
@@ -46,7 +48,7 @@
       </div>
     </div>
     <!-- Modal -->
-    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addNew" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
@@ -55,7 +57,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <form>
+          <form role="form" enctype="multipart/form-data" @submit.prevent="createPost()">
             <div class="modal-body">
               <div class="form-group">
                 <label>Post Title</label>
@@ -68,14 +70,17 @@
                 <label>Post Body</label>
                 <textarea v-model="form.body" id="body" name="body" placeholder="Enter post title" 
                 class="form-control" :class="{ 'is-invalid': form.errors.has('body') }"></textarea>
+                <!-- <markdown-editor :options="form.body"></markdown-editor> -->
+                <!-- <markdown-editor v-model="form.body"></markdown-editor> -->
                 <has-error :form="form" field="body"></has-error>
               </div>
 
               <div class="row">
                 <div class="col-md-4">
-                  <div class="form-group" v-model="form.category_id" name="category_id" :class="{ 'is-invalid': form.errors.has('category_id') }">
+                  <div class="form-group">
                     <label>Select Category</label>
-                    <select class="form-control">
+                    <select class="form-control" v-model="form.category_id" name="category_id" :class="{ 'is-invalid': form.errors.has('category_id') }">
+                      <option disabled value="">Select One</option>
                       <option v-for="category in categories" :value="category.id">{{ category.name }}</option>
                     </select>
                     <has-error :form="form" field="category_id"></has-error>
@@ -114,20 +119,40 @@
 export default {
   data(){
     return{
+      value: '',
       categories:{},
       posts:{},
       form:new Form({
+        id:'',
         title:'',
         body:'',
         category_id:'',
-        comment_id:'',
-        tag_id:'',
         user_id:'',
         photo:'',
       })
     }
   },
   methods:{
+    newModel(){
+      this.form.reset();
+      this.form.clear();
+      $('#addNew').modal('show')
+    },
+    createPost(){
+      // console.log(this.form.title)
+      this.form.post('api/posts')
+      .then(() => {
+        $('#addNew').modal('hide')
+        Toast.fire({
+          icon: 'success',
+          title: 'Post Created in successfully'
+        })
+
+      })
+      .catch(() => {
+
+      })
+    },
     chengePhoto(event){
       let file = event.target.files[0];
       let reader = new FileReader();

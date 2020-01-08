@@ -3,23 +3,25 @@ require('./bootstrap');
 window.Vue = require('vue');
 import moment from 'moment';
 
+//Import vue editor
+import 'v-markdown-editor/dist/index.css';
+import Editor from 'v-markdown-editor'
+// global register
+Vue.use(Editor);
+
 //Import vue router
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
+
+//Route import
+import {routes} from './routes';
 
 //Import V-Form
 import { Form, HasError, AlertError } from 'vform'
 window.Form = Form
 Vue.component(HasError.name, HasError)
 Vue.component(AlertError.name, AlertError)
-
-//Define some routes
-let routes = [
-{ path: '/category', component: require('./components/backend/CategoryComponent.vue').default },
-{ path: '/post', component: require('./components/backend/PostComponent.vue').default },
-{ path: '/example-component', component: require('./components/ExampleComponent.vue').default}
-]
 
 //Create the router instance and pass the `routes` option
 const router = new VueRouter({
@@ -63,6 +65,22 @@ Vue.use(VueProgressBar, {
   inverse: false
 })
 
+//Passport component
+Vue.component(
+    'passport-clients',
+    require('./components/passport/Clients.vue').default
+);
+
+Vue.component(
+    'passport-authorized-clients',
+    require('./components/passport/AuthorizedClients.vue').default
+);
+
+Vue.component(
+    'passport-personal-access-tokens',
+    require('./components/passport/PersonalAccessTokens.vue').default
+);
+
 
 //Vue componet
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
@@ -71,9 +89,6 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 const app = new Vue({
 	router
 }).$mount('#app')
-
-
-
 
 //User-defain Method
 

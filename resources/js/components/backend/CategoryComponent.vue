@@ -158,7 +158,9 @@ export default {
             })
         },
         loadCat(){
+            this.$Progress.start()
             axios.get('api/categories').then(({data}) =>(this.categories = data))
+            this.$Progress.finish()
         }
     },
     mounted() {

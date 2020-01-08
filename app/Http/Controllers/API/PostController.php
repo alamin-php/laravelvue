@@ -3,11 +3,23 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use Auth;
 use App\Post;
 use Illuminate\Http\Request;
+// use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
+        /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('api');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +27,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        return Post::with('category','comments','user')->latest()->paginate(5);
+        return Post::with('category','user')->latest()->paginate(10);
     }
 
     /**
@@ -26,7 +38,22 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // return $request->all();
+           $post = new Post;
+           $post->title = $request->title;
+           $post->body = $request->body;
+           $post->category_id = $request->category_id;
+           //it will store the current logged in user id in user_id field
+           $post->user_id = Auth::user()->id;
+           $post->save();
+
+        // return Post::create([
+        //     'title' => $request['title'],
+        //     'body' => $request['body'],
+        //     'category_id' => $request['category_id'],
+        //     'user_id' => Auth::user()->id,
+        // ]);
+
     }
 
     /**
