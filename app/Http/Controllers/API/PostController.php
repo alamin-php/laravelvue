@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Auth;
 use App\Post;
+use Image;
 use Illuminate\Http\Request;
 // use Illuminate\Support\Facades\Auth;
 
@@ -15,11 +16,10 @@ class PostController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->middleware('api');
-    }
-
+        public function __construct()
+        {
+            $this->middleware('auth:api');
+        }
     /**
      * Display a listing of the resource.
      *
@@ -38,21 +38,26 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        // return $request->all();
-           $post = new Post;
-           $post->title = $request->title;
-           $post->body = $request->body;
-           $post->category_id = $request->category_id;
-           //it will store the current logged in user id in user_id field
-           $post->user_id = Auth::user()->id;
-           $post->save();
+        $request->validate([
+            'title' => 'required|min:6|max:50',
+            'body' => 'required|min:6|string',
+        ]);
 
-        // return Post::create([
-        //     'title' => $request['title'],
-        //     'body' => $request['body'],
-        //     'category_id' => $request['category_id'],
-        //     'user_id' => Auth::user()->id,
-        // ]);
+        $strpos = strpos($request->photo, ';');
+        $sub = substr($request->photo, 0, $strpos);
+        $ex = explode('/', $sub)[1];
+        $name = time().'.'.$ex;
+        $img = Image::make($request->photo)->resize(200, 200);
+        $path = public_path().'/upload/';
+        $img->save($path.$name);
+
+        return Post::create([
+            'title' => $request['title'],
+            'body' => $request['body'],
+            'category_id' => $request['category_id'],
+            'user_id' => auth('api')->user()->id,
+            'photo' => $name,
+        ]);
 
     }
 
@@ -93,6 +98,11 @@ class PostController extends Controller
     public function destroy($id)
     {
         $post = Post::findOrfail($id);
+        $img_path = public_path().'/upload/';
+        $image = $img_path.$post->photo;
+        if (file_exists($image)) {
+            @unlink($image);
+        }
         $post->delete();
         return ['message' => '200 OK'];
     }

@@ -33,11 +33,13 @@
                   <td v-if="post.user">{{ post.user.name }}</td>
                   <td class="text-danger" v-else>Unknow User</td>
                   <td>{{ post.created_at |myDate}}</td>
-                  <td><img width="64" height="32" :src="post.photo" alt="Image"></td>
-                  <td>
-                    <a href="#"><i class="fa fa-eye"></i></a>/
-                    <a href="#"><i class="fa fa-edit"></i></a>/
-                    <a href="#"><i class="fa fa-trash"></i></a>
+                  <td><img width="64" height="32" :src="ourImage(post.photo)" alt="Image"></td>
+                  <td class="text-right py-0 align-middle">
+                    <div class="btn-group btn-group-sm">
+                      <a href="#" class="btn btn-primary" @click.prevent="showPost(post.id)"><i class="fas fa-eye"></i></a>
+                      <a href="#" class="btn btn-success" @click.prevent="editModel(post)"><i class="fas fa-edit"></i></a>
+                      <a href="#" class="btn btn-danger" @click.prevent="deletePost(post.id)"><i class="fas fa-trash"></i></a>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -52,12 +54,13 @@
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Add a new post</h5>
+            <h5 class="modal-title" id="exampleModalLongTitle" v-show="!editmode">Add a new post</h5>
+            <h5 class="modal-title" id="exampleModalLongTitle" v-show="editmode">Update post info</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <form role="form" enctype="multipart/form-data" @submit.prevent="createPost()">
+          <form role="form" enctype="multipart/form-data" @submit.prevent="editmode ? updatePost() : createPost()">
             <div class="modal-body">
               <div class="form-group">
                 <label>Post Title</label>
@@ -106,12 +109,14 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-success">Save</button>
+              <button type="submit" class="btn btn-success" v-show="editmode">Update</button>
+              <button type="submit" class="btn btn-success" v-show="!editmode">Save</button>
             </div>
           </form>
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -119,6 +124,7 @@
 export default {
   data(){
     return{
+      editmode:false,
       value: '',
       categories:{},
       posts:{},
@@ -133,34 +139,92 @@ export default {
     }
   },
   methods:{
+    updatePost(){
+      console.log('edit')
+
+    },
+    editModel(post){
+      this.editmode = true
+      this.form.reset();
+      this.form.clear();
+      $('#addNew').modal('show')
+      this.form.fill(post)
+    },
+    showPost(id){
+      this.form.get('api/posts/'+id)
+    },
+    deletePost(id){
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.value) {      
+          this.form.delete('api/posts/'+id)
+          .then(() => {
+            Fire.$emit('AfterCreate');
+            Swal.fire(
+              'Deleted!',
+              'Your file has been deleted.',
+              'success'
+              )
+
+          })
+          .catch(() => {
+
+          })
+        }
+      })
+    },
+    ourImage(img){
+      return 'upload/'+img;
+    },    
     newModel(){
+      this.editmode = false;
       this.form.reset();
       this.form.clear();
       $('#addNew').modal('show')
     },
     createPost(){
       // console.log(this.form.title)
+      this.$Progress.start()
       this.form.post('api/posts')
       .then(() => {
         $('#addNew').modal('hide')
+        Fire.$emit('AfterCreate');
         Toast.fire({
           icon: 'success',
           title: 'Post Created in successfully'
         })
+        this.$Progress.finish()
 
       })
       .catch(() => {
-
+        this.$Progress.fail()
       })
     },
     chengePhoto(event){
       let file = event.target.files[0];
-      let reader = new FileReader();
-      reader.onload = event => {
-        this.form.photo = event.target.result
-      };
+      console.log(file)
+      if (file.size > 1048576) {
+        Swal.fire(
+          'Oops...',
+          'Your uploding file too large!',
+          'error'
+          )
+      }else{
+        let reader = new FileReader();
+        reader.onload = event => {
+          this.form.photo = event.target.result
+          console.log(event.target.result)
+        };
 
-      reader.readAsDataURL(file);
+        reader.readAsDataURL(file);
+      }
     },
     loadPosts(){
       this.$Progress.start()

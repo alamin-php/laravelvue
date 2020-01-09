@@ -26,48 +26,50 @@
                                     <td>{{ index+1 }}</td>
                                     <td>{{ category.name }}</td>
                                     <td>{{ category.created_at | myDate}}</td>
-                                    <td>
-                                        <a href="#" @click="editModel(category)"><i class="fa fa-edit"></i></a>/
-                                        <a href="#" @click="deleteCat(category.id)"><i class="fa fa-trash"></i></a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- /.card-body -->
+                                    <td class="text-center py-0 align-middle">
+                                      <div class="btn-group btn-group-sm">
+                                        <a href="#" class="btn btn-success" @click="editModel(category)"><i class="fas fa-edit"></i></a>
+                                        <a href="#" class="btn btn-danger" @click="deleteCat(category.id)"><i class="fas fa-trash"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-            </div>
-        </div>
-        <!-- Modal -->
-        <div class="modal fade" id="addNew" tabindex="-1" role="dialog" aria-labelledby="addNewTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addNewTitle" v-show="!editmode">Add New</h5>
-                        <h5 class="modal-title" id="addNewTitle" v-show="editmode">Update Info</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form @submit.prevent="editmode ? updateCat() : createCat()">
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label>Category Name</label>
-                                <input v-model="form.name" type="text" name="name" placeholder="Enter a category name" 
-                                class="form-control" :class="{ 'is-invalid': form.errors.has('name') }">
-                                <has-error :form="form" field="name"></has-error>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                            <button type="submit" v-show="editmode" class="btn btn-success">Update</button>
-                            <button type="submit" v-show="!editmode" class="btn btn-success">Save</button>
-                        </div>
-                    </form>
-                </div>
+                <!-- /.card-body -->
             </div>
         </div>
     </div>
+    <!-- Modal -->
+    <div class="modal fade" id="addNew" tabindex="-1" role="dialog" aria-labelledby="addNewTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addNewTitle" v-show="!editmode">Add New</h5>
+                    <h5 class="modal-title" id="addNewTitle" v-show="editmode">Update Info</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form @submit.prevent="editmode ? updateCat() : createCat()">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Category Name</label>
+                            <input v-model="form.name" type="text" name="name" placeholder="Enter a category name" 
+                            class="form-control" :class="{ 'is-invalid': form.errors.has('name') }">
+                            <has-error :form="form" field="name"></has-error>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        <button type="submit" v-show="editmode" class="btn btn-success">Update</button>
+                        <button type="submit" v-show="!editmode" class="btn btn-success">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 </template>
 
 <script>
