@@ -102,7 +102,7 @@
                 </div>
                 <div class="col-md-4">
                   <div class="timeline-body">
-                    <img :src="form.photo" width="150" height="100">
+                    <img :src="ourImage(post.photo)" width="150" height="100">
                   </div>
                 </div>
               </div>
@@ -148,7 +148,7 @@ export default {
       this.form.reset();
       this.form.clear();
       $('#addNew').modal('show')
-      this.form.fill(post)
+      this.form.fill(data.post)
     },
     showPost(id){
       this.form.get('api/posts/'+id)
