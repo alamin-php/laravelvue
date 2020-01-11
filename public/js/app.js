@@ -2251,20 +2251,35 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     updatePost: function updatePost() {
-      console.log('edit');
+      var _this = this;
+
+      this.$Progress.start();
+      this.form.put('api/posts/' + this.form.id).then(function () {
+        $('#addNew').modal('hide');
+        Fire.$emit('AfterCreate');
+
+        _this.$Progress.finish();
+
+        Toast.fire({
+          icon: 'success',
+          title: 'Post Updated in successfully'
+        });
+      })["catch"](function () {
+        _this.$Progress.fail();
+      });
     },
     editModel: function editModel(post) {
       this.editmode = true;
       this.form.reset();
       this.form.clear();
       $('#addNew').modal('show');
-      this.form.fill(data.post);
+      this.form.fill(post);
     },
     showPost: function showPost(id) {
       this.form.get('api/posts/' + id);
     },
     deletePost: function deletePost(id) {
-      var _this = this;
+      var _this2 = this;
 
       Swal.fire({
         title: 'Are you sure?',
@@ -2276,15 +2291,24 @@ __webpack_require__.r(__webpack_exports__);
         confirmButtonText: 'Yes, delete it!'
       }).then(function (result) {
         if (result.value) {
-          _this.form["delete"]('api/posts/' + id).then(function () {
+          _this2.form["delete"]('api/posts/' + id).then(function () {
             Fire.$emit('AfterCreate');
             Swal.fire('Deleted!', 'Your file has been deleted.', 'success');
           })["catch"](function () {});
         }
       });
     },
-    ourImage: function ourImage(img) {
-      return 'upload/' + img;
+    updatePostImage: function updatePostImage() {
+      var img = this.form.photo;
+
+      if (img.length > 200) {
+        return this.form.photo;
+      } else {
+        return "upload/".concat(this.form.photo);
+      }
+    },
+    getPostPhoto: function getPostPhoto(img) {
+      return "upload/" + img;
     },
     newModel: function newModel() {
       this.editmode = false;
@@ -2293,7 +2317,7 @@ __webpack_require__.r(__webpack_exports__);
       $('#addNew').modal('show');
     },
     createPost: function createPost() {
-      var _this2 = this;
+      var _this3 = this;
 
       // console.log(this.form.title)
       this.$Progress.start();
@@ -2305,13 +2329,13 @@ __webpack_require__.r(__webpack_exports__);
           title: 'Post Created in successfully'
         });
 
-        _this2.$Progress.finish();
+        _this3.$Progress.finish();
       })["catch"](function () {
-        _this2.$Progress.fail();
+        _this3.$Progress.fail();
       });
     },
     chengePhoto: function chengePhoto(event) {
-      var _this3 = this;
+      var _this4 = this;
 
       var file = event.target.files[0];
       console.log(file);
@@ -2322,7 +2346,7 @@ __webpack_require__.r(__webpack_exports__);
         var reader = new FileReader();
 
         reader.onload = function (event) {
-          _this3.form.photo = event.target.result;
+          _this4.form.photo = event.target.result;
           console.log(event.target.result);
         };
 
@@ -2330,31 +2354,31 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     loadPosts: function loadPosts() {
-      var _this4 = this;
+      var _this5 = this;
 
       this.$Progress.start();
       axios.get('api/posts').then(function (_ref) {
         var data = _ref.data;
-        return _this4.posts = data.data;
+        return _this5.posts = data.data;
       });
       this.$Progress.finish();
     },
     loadCat: function loadCat() {
-      var _this5 = this;
+      var _this6 = this;
 
       axios.get('api/categories').then(function (_ref2) {
         var data = _ref2.data;
-        return _this5.categories = data.data;
+        return _this6.categories = data.data;
       });
     }
   },
   mounted: function mounted() {
-    var _this6 = this;
+    var _this7 = this;
 
     this.loadCat();
     this.loadPosts();
     Fire.$on('AfterCreate', function () {
-      _this6.loadPosts();
+      _this7.loadPosts();
     });
   }
 });
@@ -75166,9 +75190,9 @@ var render = function() {
                     _c("td", [
                       _c("img", {
                         attrs: {
-                          width: "64",
-                          height: "32",
-                          src: _vm.ourImage(post.photo),
+                          width: "84",
+                          height: "64",
+                          src: _vm.getPostPhoto(post.photo),
                           alt: "Image"
                         }
                       })
@@ -75176,21 +75200,6 @@ var render = function() {
                     _vm._v(" "),
                     _c("td", { staticClass: "text-right py-0 align-middle" }, [
                       _c("div", { staticClass: "btn-group btn-group-sm" }, [
-                        _c(
-                          "a",
-                          {
-                            staticClass: "btn btn-primary",
-                            attrs: { href: "#" },
-                            on: {
-                              click: function($event) {
-                                $event.preventDefault()
-                                return _vm.showPost(post.id)
-                              }
-                            }
-                          },
-                          [_c("i", { staticClass: "fas fa-eye" })]
-                        ),
-                        _vm._v(" "),
                         _c(
                           "a",
                           {
@@ -75484,7 +75493,9 @@ var render = function() {
                       _c("div", { staticClass: "timeline-body" }, [
                         _c("img", {
                           attrs: {
-                            src: _vm.ourImage(_vm.post.photo),
+                            src: _vm.editmode
+                              ? _vm.updatePostImage()
+                              : _vm.form.photo,
                             width: "150",
                             height: "100"
                           }
