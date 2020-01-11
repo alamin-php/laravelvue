@@ -2258,7 +2258,7 @@ __webpack_require__.r(__webpack_exports__);
       this.form.reset();
       this.form.clear();
       $('#addNew').modal('show');
-      this.form.fill(post);
+      this.form.fill(data.post);
     },
     showPost: function showPost(id) {
       this.form.get('api/posts/' + id);
@@ -75484,7 +75484,7 @@ var render = function() {
                       _c("div", { staticClass: "timeline-body" }, [
                         _c("img", {
                           attrs: {
-                            src: _vm.form.photo,
+                            src: _vm.ourImage(_vm.post.photo),
                             width: "150",
                             height: "100"
                           }
@@ -92629,8 +92629,8 @@ var routes = [{
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\xampp\htdocs\laravueblog\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\laravueblog\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\xampp\htdocs\laravelvue\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\laravelvue\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
