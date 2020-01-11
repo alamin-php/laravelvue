@@ -33,10 +33,10 @@
                   <td v-if="post.user">{{ post.user.name }}</td>
                   <td class="text-danger" v-else>Unknow User</td>
                   <td>{{ post.created_at |myDate}}</td>
-                  <td><img width="64" height="32" :src="ourImage(post.photo)" alt="Image"></td>
+                  <td><img width="84" height="64" :src="getPostPhoto(post.photo)" alt="Image"></td>
                   <td class="text-right py-0 align-middle">
                     <div class="btn-group btn-group-sm">
-                      <a href="#" class="btn btn-primary" @click.prevent="showPost(post.id)"><i class="fas fa-eye"></i></a>
+                      <!-- <a href="#" class="btn btn-primary" @click.prevent="showPost(post.id)"><i class="fas fa-eye"></i></a> -->
                       <a href="#" class="btn btn-success" @click.prevent="editModel(post)"><i class="fas fa-edit"></i></a>
                       <a href="#" class="btn btn-danger" @click.prevent="deletePost(post.id)"><i class="fas fa-trash"></i></a>
                     </div>
@@ -102,7 +102,7 @@
                 </div>
                 <div class="col-md-4">
                   <div class="timeline-body">
-                    <img :src="ourImage(post.photo)" width="150" height="100">
+                    <img :src="editmode ? updatePostImage() : form.photo" width="150" height="100">
                   </div>
                 </div>
               </div>
@@ -139,16 +139,28 @@ export default {
     }
   },
   methods:{
-    updatePost(){
-      console.log('edit')
-
-    },
+        updatePost(){
+            this.$Progress.start()
+            this.form.put('api/posts/'+this.form.id)
+            .then(() =>{
+                $('#addNew').modal('hide')
+                Fire.$emit('AfterCreate');
+                this.$Progress.finish()
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Post Updated in successfully'
+                })
+            })
+            .catch(() =>{
+                this.$Progress.fail()
+            })
+        },
     editModel(post){
       this.editmode = true
       this.form.reset();
       this.form.clear();
       $('#addNew').modal('show')
-      this.form.fill(data.post)
+      this.form.fill(post)
     },
     showPost(id){
       this.form.get('api/posts/'+id)
@@ -180,9 +192,17 @@ export default {
         }
       })
     },
-    ourImage(img){
-      return 'upload/'+img;
-    },    
+    updatePostImage(){
+      let img = this.form.photo;
+      if (img.length > 200) {
+        return this.form.photo
+      }else{
+        return `upload/${this.form.photo}`
+      }
+    },
+    getPostPhoto(img){
+      return "upload/"+img;
+    },        
     newModel(){
       this.editmode = false;
       this.form.reset();

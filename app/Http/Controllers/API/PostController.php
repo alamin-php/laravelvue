@@ -82,11 +82,53 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $post = Post::findOrfail($id);
+        $post = Post::find($id);
 
-        $post->update($request->all());
+        $request->validate([
+            'title' => 'required|min:6|max:50',
+            'body' => 'required|min:6|string',
+        ]);
 
-        return ['message' => '200 OK'];
+        if ($request->photo != $post->photo) {
+            $strpos = strpos($request->photo, ';');
+            $sub = substr($request->photo, 0, $strpos);
+            $ex = explode('/', $sub)[1];
+            $name = time().'.'.$ex;
+            $img = Image::make($request->photo)->resize(200, 200);
+            $path = public_path().'/upload/';
+            $image = $path.$post->photo;
+            $img->save($path.$name);
+
+            if (file_exists($image)) {
+                @unlink($image);
+            }
+        }else{
+            $name = $post->photo;
+        }
+
+        $post->title = $request->title;
+        $post->body = $request->body;
+        $post->category_id = $request->category_id;
+        $post->user_id = auth('api')->user()->id;
+        $post->photo = $name;
+        $post->save();
+
+        // if ($request->photo != $post->photo) {
+        //     $strpos = strpos($request->photo, ';');
+        //     $sub = substr($request->photo, 0, $strpos);
+        //     $ex = explode('/', $sub)[1];
+        //     $name = time().'.'.$ex;
+        //     $img = Image::make($request->photo)->resize(200, 200);
+        //     $path = public_path().'/upload/';
+        //     $image = $path.$post->photo;
+        //     $img->save($path.$name);
+
+        //     if (file_exists($image)) {
+        //         @unlink($image);
+        //     }else{
+        //         $name = $post->photo;
+        //     }
+        // }
     }
 
     /**
