@@ -34,8 +34,8 @@ Author: BootstrapMade.com
 Author URL: https://bootstrapmade.com
 ======================================================= -->
 </head>
-
 <body>
+<div id="app">
   <div id="wrapper">
     <!-- toggle top area -->
     <div class="hidden-top">
@@ -246,7 +246,7 @@ Author URL: https://bootstrapmade.com
 
 
    <!-- Vue routing -->
-    <h2>Vue Routing...</h2>
+    <router-view></router-view>
   
 
 
@@ -282,12 +282,12 @@ Author URL: https://bootstrapmade.com
           </div>
           <div class="span3">
             <div class="widget">
-              <h5 class="widgetheading">Flickr photostream</h5>
+{{--               <h5 class="widgetheading">Flickr photostream</h5>
               <div class="flickr_badge">
                 <script type="text/javascript" src="http://www.flickr.com/badge_code_v2.gne?count=8&amp;display=random&amp;size=s&amp;layout=x&amp;source=user&amp;user=34178660@N03"></script>
               </div>
               <div class="clear">
-              </div>
+              </div> --}}
             </div>
           </div>
           <div class="span3">
@@ -339,10 +339,12 @@ Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
 </div>
 </footer>
 </div>
+</div>
 <a href="#" class="scrollup"><i class="icon-chevron-up icon-square icon-32 active"></i></a>
 <!-- javascript
   ================================================== -->
   <!-- Placed at the end of the document so the pages load faster -->
+  <script src="{{ asset('js/app.js') }}"></script>
   <script src="{{ asset('assets/public/js/jquery.js') }}"></script>
   <script src="{{ asset('assets/public/js/jquery.easing.1.3.js') }}"></script>
   <script src="{{ asset('assets/public/js/bootstrap.js') }}"></script>

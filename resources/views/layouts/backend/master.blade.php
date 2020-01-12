@@ -103,10 +103,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </router-link>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <router-link to="/users" class="nav-link">
                   <i class="fa fa-users nav-icon"></i>
                   <p>User</p>
-                </a>
+                </router-link>
               </li>
             </ul>
           </li>
