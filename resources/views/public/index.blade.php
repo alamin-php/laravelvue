@@ -221,15 +221,9 @@ Author URL: https://bootstrapmade.com
                         <li><a href="portfolio-detail.html">Portfolio detail</a></li>
                       </ul>
                     </li>
-                    <li class="dropdown">
-                      <a href="#">Blog <i class="icon-angle-down"></i></a>
-                      <ul class="dropdown-menu">
-                        <li><a href="blog-left-sidebar.html">Blog left sidebar</a></li>
-                        <li><a href="blog-right-sidebar.html">Blog right sidebar</a></li>
-                        <li><a href="post-left-sidebar.html">Post left sidebar</a></li>
-                        <li><a href="post-right-sidebar.html">Post right sidebar</a></li>
-                      </ul>
-                    </li>
+                    <li>
+                      <router-link to="/blog">Blog</router-link>
+                    </li>                    
                     <li>
                       <a href="contact.html">Contact </a>
                     </li>
@@ -244,15 +238,9 @@ Author URL: https://bootstrapmade.com
     </header>
     <!-- end header -->
 
-
    <!-- Vue routing -->
-    <router-view></router-view>
+    <home-main></home-main>
   
-
-
-
-
-
     <footer>
       <div class="container">
         <div class="row">
@@ -282,12 +270,12 @@ Author URL: https://bootstrapmade.com
           </div>
           <div class="span3">
             <div class="widget">
-{{--               <h5 class="widgetheading">Flickr photostream</h5>
+              <h5 class="widgetheading">Flickr photostream</h5>
               <div class="flickr_badge">
-                <script type="text/javascript" src="http://www.flickr.com/badge_code_v2.gne?count=8&amp;display=random&amp;size=s&amp;layout=x&amp;source=user&amp;user=34178660@N03"></script>
+
               </div>
               <div class="clear">
-              </div> --}}
+              </div>
             </div>
           </div>
           <div class="span3">

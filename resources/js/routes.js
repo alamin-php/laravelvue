@@ -6,5 +6,5 @@ export let routes = [
 { path: '/category', component: require('./components/backend/CategoryComponent.vue').default },
 { path: '/post', component: require('./components/backend/PostComponent.vue').default },
 //Frontpage routes
-{ path: '/front-home', component: require('./components/frontend/FrontHomeComponent.vue').default}
+{ path: '/blog', component: require('./components/frontend/blog/BlogPost.vue').default}
 ]

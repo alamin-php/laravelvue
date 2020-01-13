@@ -24,3 +24,5 @@ Route::resources([
     'posts' => 'API\PostController',
     'users' => 'API\UserController'
 ]);
+
+Route::get('/blogpost', 'API\BlogController@getPost');

@@ -6,6 +6,7 @@
 
 <script>
     export default {
+    	name:"FrontMasterComponent",
         mounted() {
             console.log('Component mounted.')
         }

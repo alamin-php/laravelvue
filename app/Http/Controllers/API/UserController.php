@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\User;
+use Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -25,7 +26,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return User::latest()->paginate(10);
+        return User::paginate(10);
     }
 
     /**
@@ -37,18 +38,26 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-        'name' => 'required|min:3|max:50',
+        'name' => 'required|min:3|max:50|unique:users',
         'email' => 'required|string|email',
         'password' => 'required|min:6|string',
         ]);
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);
-        $user->type = $request->type;
-        $user->bio = $request->bio;
-        // $user->photo = $request->photo;
-        $user->save();
+        $strpos = strpos($request->photo, ';');
+        $sub = substr($request->photo, 0, $strpos);
+        $ex = explode('/', $sub)[1];
+        $name = time().'.'.$ex;
+        $img = Image::make($request->photo)->resize(200, 200);
+        $path = public_path().'/upload/profile/';
+        $img->save($path.$name);
+
+        return User::create([
+        'name' => $request['name'],
+        'email' => $request['email'],
+        'password' => Hash::make($request['password']),
+        'type' => $request['type'],
+        'bio' => $request['bio'],
+        'photo' => $name,
+        ]);
 
         return ['message' => 'Ok 200'];
 
@@ -85,6 +94,14 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = User::findOrfail($id);
+        $img_path = public_path().'/upload/profile/';
+        $image = $img_path.$user->photo;
+
+        if (file_exists($image)) {
+            @unlink($image);
+        }
+        $user->delete();
+        return ['message' => 'Ok 200'];
     }
 }

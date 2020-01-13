@@ -20,3 +20,4 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/{path}', 'HomeController@index')->where('path', '[A-Za-z]+');
+Route::get('/{path}', 'BlogController@index')->where('path', '[A-Za-z]+');

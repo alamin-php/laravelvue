@@ -83,6 +83,8 @@ Vue.component(
 
 
 //Vue componet
+// Vue.component('front-home', require('./components/frontend/FrontHomeComponent.vue').default);
+Vue.component('home-main', require('./components/frontend/FrontMasterComponent.vue').default);
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 
